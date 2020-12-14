@@ -1,0 +1,111 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset='utf-8'/>
+        <meta name='viewport' content='width=device-width, initial-scale=1.0'/>
+        <title class='title'></title>
+        <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Lobster&family=Open+Sans&display=swap" rel="stylesheet"> 
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Ramabhadra&display=swap" rel="stylesheet">
+        <script src='./js/newQ.js'></script>
+        <script>
+
+const readIncidents = function () {
+                // læs m ajax
+                let oReq = new XMLHttpRequest();
+                oReq.addEventListener("load", function () {
+                    incidents = [];
+                    if (this.responseText.length > 0)
+                        incidents = JSON.parse(this.responseText); // get and objectify
+                        for (var i = 0; i < incidents.length; i++) {
+                            var mainContainer = document.getElementById("myData");
+                            var div = document.createElement("div");
+                            div.innerHTML = 
+                                            '<b>Alvorlighed: </b>' + '<p id="alvorligP">' + incidents[i].alvorligt + '</p>' +
+                                            '<b>Name: </b>' + '<p id="nameP">' + incidents[i].name + '</p>' +
+                                            '<b>Mobil: </b>' + '<p id="mobilP">' + incidents[i].mobil + '</p>'+
+                                            '<b>Besked: </b>' + '<p id="beskedP">' + incidents[i].besked + '</p>'+
+                                            '<b>Fagperson: </b>' + '<p id="needP">' + incidents[i].need + '</p>' + 
+                                            '<div id="btnContainer">' + '<button id="slet"'+ i + ' onclick="clickFunc('+i+')">' + 
+                                            'Marker som løst</button>' + '<button id="sendPerson" onclick="sendPerson()">' + 
+                                            'Send fagperson</button>' + '</div>'
+
+
+                            mainContainer.appendChild(div);
+                        }  
+
+
+                });
+                oReq.open("GET", "./getIncidents.php");
+                oReq.send();
+            };
+
+            function clickFunc(i) {
+                console.log(incidents);
+                incidents.splice(i, 1); 
+
+                $('json').value = JSON.stringify(incidents);   // stringify
+                    document.forms['form22'].submit();          // send
+                };
+
+            function sendPerson() {
+                alert("Vi har sendt information til brugeren om, at en fagperson er på vej");
+                document.getElementById("sendPerson").style.backgroundColor = "#f5d742"
+            }
+
+                function toggleNav() {
+                    var x = document.getElementById("myLinks");
+                    if (x.style.display === "block") {
+                    x.style.display = "none";
+                    } else {
+                    x.style.display = "block";
+                        }
+                }
+
+
+
+
+
+
+                        // her skal du skrive incidents tilbage til serveren
+                        // https://stackoverflow.com/questions/32546100/how-to-write-data-to-a-json-file-using-javascript
+            
+
+                        
+            const doThis = function () {
+                readIncidents();
+            };
+
+            let incidents;
+            window.addEventListener('load', doThis);
+
+        </script>
+    </head>
+    <body>   <!-- autofilled -->
+        <main>
+            <div class="topnav">
+                <a href="tf.html" class="active">Tønder Festival</a>
+                <!-- Navigation links (hidden by default) -->
+                <div id="myLinks">
+                  <a href="report.html">Indrapportering</a>
+                  <a href="tf.html">Sager</a>
+                  <a href="index.html">Forside</a>
+                </div>
+                <!-- "Hamburger menu" / "Bar icon" to toggle the navigation links -->
+                <a href="javascript:void(0);" class="icon" onclick="toggleNav()">
+                  <i class="fa fa-bars"></i>
+                </a>
+              </div>
+            <section id='incidents'></section>
+            <div id="myData">
+            </div>
+            <form action='receiveAndStore.php' method='post' name='form22'>
+                <input type='hidden' id='json' name='json'/>
+            </form>
+        </main>
+        <footer></footer>                           <!-- autofilled -->
+    </body>
+</html>

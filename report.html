@@ -1,0 +1,117 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset='utf-8'/>
+        <meta name='viewport' content='width=device-width, initial-scale=1.0'/>
+        <title class='title'></title>
+        <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Lobster&family=Open+Sans&display=swap" rel="stylesheet"> 
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Ramabhadra&display=swap" rel="stylesheet">
+        <script src='./js/newQ.js'></script>
+
+        <link rel="stylesheet" href="style.css">
+        <script>
+            const manipulateForm = function (e) {
+                e.preventDefault();
+                // læs m ajax
+                let oReq = new XMLHttpRequest();
+                oReq.addEventListener("load", function () {
+                    let hentet = [];
+                   if (this.responseText.length > 0)
+                        hentet = JSON.parse(this.responseText); // get and objectify
+                    // udvid array m indtastet
+                    let n = $('name').value;
+                    let m = $('mobil').value;
+                    let b = $('besked').value;
+                    let nn = $('need').value;
+                    let a = $('alvorligt').value;
+                    let o = {
+                        name: n,
+                        mobil: m,
+                        besked: b,
+                        need: nn,
+                        alvorligt: a,
+                    }; 
+
+                    hentet.push(o);                             // add new
+                    $('json').value = JSON.stringify(hentet);   // stringify
+                    document.forms['form22'].submit();          // send
+
+                });
+                oReq.open("GET", "http://localhost/getIncidents.php");
+                oReq.send();
+            };
+            const doThis = function () {
+                $('butt').addEventListener('click', manipulateForm)
+            };
+
+            function toggleNav() {
+                    var x = document.getElementById("myLinks");
+                    if (x.style.display === "block") {
+                    x.style.display = "none";
+                    } else {
+                    x.style.display = "block";
+                        }
+                    }
+            
+            var time = new Date();
+            let tim = time.getDate();
+            console.log(tim);
+
+            window.addEventListener('load', doThis);
+            
+        </script>
+    </head>
+    <body>   <!-- autofilled -->
+        <main>
+            <div class="topnav">
+                <a href="index.html" class="active">Tønder Festival</a>
+                <!-- Navigation links (hidden by default) -->
+                <div id="myLinks">
+                  <a href="report.html">Indrapportering</a>
+                  <a href="tf.html">Sager</a>
+                  <a href="index.html">About</a>
+                </div>
+                <!-- "Hamburger menu" / "Bar icon" to toggle the navigation links -->
+                <a href="javascript:void(0);" class="icon" onclick="toggleNav()">
+                  <i class="fa fa-bars"></i>
+                </a>
+              </div>
+            <form name='form22' action='./receiveAndStore.php' method='post'>
+                        <label for='name'>Name</label>
+                        <input id='name' name='name' type='text' required>
+
+                        <label for='mobil'>Mobil</label>
+                        <input id='mobil' name='mobil' type='number' required>
+
+                        <label for='besked'>Besked</label>
+                        <input id='besked' name='besked' type="text" required>
+
+                        <label for='need'>Hvilken fagperson har du brug for?</label>
+                        <select id='need' name='need' required>
+                            <option value="elektriker">Elektriker</option> 
+                            <option value="vvs'er" selected>VVS'er</option>
+                            <option value="andet">Andet</option>
+                        </select>
+                        
+                        <label for='alvorligt'>Hvor alvorligt er problemet?</label>
+                        <select id='alvorligt' name='alvorligt' required>
+                            <option value="Meget alvorligt">Meget Alvorligt</option> 
+                            <option value="Alvorligt" selected>Alvorligt</option>
+                            <option value="Lidt alvorligt">Lidt alvorligt</option>
+                            <option value="Ikke så alvorligt">Ikke så alvorligt</option>
+                        </select>
+                        
+
+                        <input id='json' name='json' type='hidden' value='' readonly/>
+
+                        <button id='butt' onclick="getTime()">Insend </button>
+
+            </form>
+        </main>
+        <footer></footer>              <!-- autofilled -->
+    </body>
+</html>
